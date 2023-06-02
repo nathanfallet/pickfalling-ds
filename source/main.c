@@ -56,12 +56,12 @@ int main() {
     // Load textures
     const unsigned int texcoords[] = {0, 0, 32, 32};
 	glLoadSpriteSet(
-        game.playerSprite, 1, texcoords, GL_RGB256, TEXTURE_SIZE_32, TEXTURE_SIZE_32,
+        &game.playerSprite, 1, texcoords, GL_RGB256, TEXTURE_SIZE_32, TEXTURE_SIZE_32,
 		GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
 		256, (u16*)playerPal, (u8*)playerBitmap
 	);
     glLoadSpriteSet(
-        game.objectSprite, 1, texcoords, GL_RGB256, TEXTURE_SIZE_32, TEXTURE_SIZE_32,
+        &game.objectSprite, 1, texcoords, GL_RGB256, TEXTURE_SIZE_32, TEXTURE_SIZE_32,
         GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
         256, (u16*)spinashPal, (u8*)spinashBitmap
     );

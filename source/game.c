@@ -2,13 +2,13 @@
 
 void renderMainScreen(Game *game) {
     glBoxFilled(0, 0, 256, 192, RGB15(16, 15, 5));
-    glSprite(game->objectX, game->objectY, GL_FLIP_NONE, game->objectSprite);
+    glSprite(game->objectX, game->objectY, GL_FLIP_NONE, &game->objectSprite);
 }
 
 void renderSubScreen(Game *game) {
     glBoxFilled(0, 0, 256, 192, RGB15(16, 15, 5));
-    glSprite(game->playerX, game->playerY-192, GL_FLIP_NONE, game->playerSprite);
-    glSprite(game->objectX, game->objectY-192, GL_FLIP_NONE, game->objectSprite);
+    glSprite(game->playerX, game->playerY-192, GL_FLIP_NONE, &game->playerSprite);
+    glSprite(game->objectX, game->objectY-192, GL_FLIP_NONE, &game->objectSprite);
 }
 
 int speed(Game *game) {

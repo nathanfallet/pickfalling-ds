@@ -2,8 +2,6 @@
 #include <gl2d.h>
 
 typedef struct {
-    glImage *playerSprite;
-    glImage *objectSprite;
     int playerX;
     int playerY;
     int objectX;
@@ -11,6 +9,8 @@ typedef struct {
     int score;
     int started;
     int lost;
+    glImage playerSprite;
+    glImage objectSprite;
 } Game;
 
 void renderMainScreen(Game *game);
