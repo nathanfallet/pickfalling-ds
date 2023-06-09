@@ -5,6 +5,7 @@
 #include <gl2d.h>
 
 #include "font.h"
+#include "mode.h"
 
 typedef struct {
     int playerX;
@@ -18,8 +19,12 @@ typedef struct {
     glImage objectSprite;
 } Game;
 
-void renderMainScreen(Game *game, Font *font);
-void renderSubScreen(Game *game);
+void gameFromMode(Game *game, Mode mode);
+
+void handleGameTouch(Game *game, touchPosition touch);
+void handleGameKey(Game *game, int key);
+void renderGameMainScreen(Game *game, Font *font);
+void renderGameSubScreen(Game *game, Font *font);
 
 int speed(Game *game);
 void nextFrame(Game *game);

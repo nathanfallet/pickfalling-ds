@@ -1,18 +1,40 @@
 #include "game.h"
 
-void renderMainScreen(Game *game, Font *font) {
-    glBoxFilled(0, 0, 256, 192, RGB15(16, 15, 5));
-    glSprite(game->objectX, game->objectY, GL_FLIP_NONE, &game->objectSprite);
-    printFontCenteredN(font, 0, 16, game->score);
-    if (game->lost) {
-        printFontCentered(font, 0, 80, "GAME OVER");
-    }
+void gameFromMode(Game *game, Mode mode) {
+    game->playerX = 128 - 16;
+    game->playerY = 2 * 192 - 32;
+    game->objectX = 128 - 16;
+    game->objectY = 0;
+    game->score = 0;
+    game->started = 0;
+    game->lost = 0;
 }
 
-void renderSubScreen(Game *game) {
+void handleGameTouch(Game *game, touchPosition touch) {
+    game->started = 1;
+    game->playerX = touch.px - 16;
+}
+
+void handleGameKey(Game *game, int key) {
+    
+}
+
+void renderGameMainScreen(Game *game, Font *font) {
     glBoxFilled(0, 0, 256, 192, RGB15(16, 15, 5));
-    glSprite(game->playerX, game->playerY-192, GL_FLIP_NONE, &game->playerSprite);
-    glSprite(game->objectX, game->objectY-192, GL_FLIP_NONE, &game->objectSprite);
+    if (game->started) {
+        glSprite(game->objectX, game->objectY, GL_FLIP_NONE, &game->objectSprite);
+    }
+    printFontCenteredN(font, 0, 16, game->score);
+}
+
+void renderGameSubScreen(Game *game, Font *font) {
+    glBoxFilled(0, 0, 256, 192, RGB15(16, 15, 5));
+    if (game->lost) {
+        printFontCentered(font, 0, 80, "GAME OVER");
+    } else {
+        glSprite(game->playerX, game->playerY-192, GL_FLIP_NONE, &game->playerSprite);
+        glSprite(game->objectX, game->objectY-192, GL_FLIP_NONE, &game->objectSprite);
+    }
 }
 
 int speed(Game *game) {

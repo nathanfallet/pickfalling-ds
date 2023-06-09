@@ -7,6 +7,7 @@
 #include <font_si.h>
 #include <font_16x16.h>
 
+#include "menu.h"
 #include "game.h"
 #include "font.h"
 #include "uvcoord_font_si.h"
@@ -55,16 +56,14 @@ int main() {
     vramSetBankF(VRAM_F_TEX_PALETTE); // ?
     vramSetBankE(VRAM_E_MAIN_BG); // 64 kb
 
+    // Menu
+    Menu menu;
+    menu.mode = 0;
+    menu.play = 0;
+
     // Game
     int frame = 0;
     Game game;
-    game.playerX = 128 - 16;
-    game.playerY = 2 * 192 - 32;
-    game.objectX = 128 - 16;
-    game.objectY = 0;
-    game.score = 0;
-    game.started = 0;
-    game.lost = 0;
 
     // Load textures
     const unsigned int texcoords[] = {0, 0, 32, 32};
@@ -97,8 +96,18 @@ int main() {
 		int held = keysHeld();
 		if (held & KEY_TOUCH) {
 			touchRead(&touch);
-            game.started = 1;
-            game.playerX = touch.px - 16;
+            if (menu.play) {
+                handleGameTouch(&game, touch);
+            } else {
+                handleMenuTouch(&menu, &game, touch);
+            }
+        } else {
+            if (menu.play) {
+                handleGameKey(&game, held);
+                handleGameMenuKey(&game, &menu, held);
+            } else {
+                handleMenuKey(&menu, &game, held);
+            }
         }
 
         // Draw things
@@ -108,13 +117,21 @@ int main() {
 			vramSetBankD(VRAM_D_LCD);
 			vramSetBankC(VRAM_C_SUB_BG);
 			REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3);
-            renderMainScreen(&game, &fontBig);
+            if (menu.play) {
+                renderGameMainScreen(&game, &fontBig);
+            } else {
+                renderMenuMainScreen(&menu, &fontBig);
+            }
         } else {
             lcdMainOnBottom();
 			vramSetBankC(VRAM_C_LCD);
 			vramSetBankD(VRAM_D_SUB_SPRITE);
 			REG_DISPCAPCNT = DCAP_BANK(2) | DCAP_ENABLE | DCAP_SIZE(3);
-            renderSubScreen(&game);
+            if (menu.play) {
+                renderGameSubScreen(&game, &fontBig);
+            } else {
+                renderMenuSubScreen(&menu, &fontBig);
+            }
         }
 
         glEnd2D();
@@ -123,7 +140,7 @@ int main() {
         glFlush(0);
         swiWaitForVBlank();
         frame++;
-        if (game.started) {
+        if (menu.play && game.started) {
             nextFrame(&game);
         }    
     }
