@@ -1,10 +1,16 @@
 #include <nds.h>
 #include <gl2d.h>
+#include <time.h>
 
 #include <spinash.h>
 #include <player.h>
+#include <font_si.h>
+#include <font_16x16.h>
 
 #include "game.h"
+#include "font.h"
+#include "uvcoord_font_si.h"
+#include "uvcoord_font_16x16.h"
 
 void initSubSprites(void) {
 	oamInit(&oamSub, SpriteMapping_Bmp_2D_256, false);
@@ -27,7 +33,14 @@ void initSubSprites(void) {
 }
 
 int main() {
+    srand((unsigned) time(NULL));
+
     touchPosition touch;
+
+    glImage FontImages[FONT_SI_NUM_IMAGES];
+    glImage FontBigImages[FONT_16X16_NUM_IMAGES];
+    Font font;
+    Font fontBig;
 
     videoSetMode(MODE_5_3D);
 	videoSetModeSub(MODE_5_2D);
@@ -65,6 +78,18 @@ int main() {
         GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
         256, (u16*)spinashPal, (u8*)spinashBitmap
     );
+    loadFont(
+        &font, FontImages, FONT_SI_NUM_IMAGES, font_si_texcoords, GL_RGB256,
+		TEXTURE_SIZE_64, TEXTURE_SIZE_128,
+        GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
+		256, (u16*)font_siPal, (u8*)font_siBitmap
+    );
+    loadFont(
+        &fontBig, FontBigImages, FONT_16X16_NUM_IMAGES, font_16x16_texcoords, GL_RGB256,
+		TEXTURE_SIZE_64, TEXTURE_SIZE_512,
+        GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
+		256, (u16*)font_siPal, (u8*)font_16x16Bitmap
+    );
 
     while(1) {
         // Read touch position
@@ -83,7 +108,7 @@ int main() {
 			vramSetBankD(VRAM_D_LCD);
 			vramSetBankC(VRAM_C_SUB_BG);
 			REG_DISPCAPCNT = DCAP_BANK(3) | DCAP_ENABLE | DCAP_SIZE(3);
-            renderMainScreen(&game);
+            renderMainScreen(&game, &fontBig);
         } else {
             lcdMainOnBottom();
 			vramSetBankC(VRAM_C_LCD);

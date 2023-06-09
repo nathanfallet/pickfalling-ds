@@ -1,8 +1,12 @@
 #include "game.h"
 
-void renderMainScreen(Game *game) {
+void renderMainScreen(Game *game, Font *font) {
     glBoxFilled(0, 0, 256, 192, RGB15(16, 15, 5));
     glSprite(game->objectX, game->objectY, GL_FLIP_NONE, &game->objectSprite);
+    printFontCenteredN(font, 0, 16, game->score);
+    if (game->lost) {
+        printFontCentered(font, 0, 80, "GAME OVER");
+    }
 }
 
 void renderSubScreen(Game *game) {
@@ -25,7 +29,7 @@ void nextFrame(Game *game) {
     ) {
         game->score += 1;
         game->objectY = 0;
-        game->objectX = rand() % 256 - 32;
+        game->objectX = rand() % (256 - 32);
     }
     if (game->objectY > 2*192) {
         game->lost = 1;
